@@ -1,0 +1,59 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ROOT THEME */
+html, body {
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Helvetica, Arial, sans-serif;
+}
+
+/* TYPOGRAPHY */
+h1, h2, h3 {
+  font-weight: 300;
+  letter-spacing: 0.25em;
+}
+
+p {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+/* LINKS & BUTTONS */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* LUXURY CTA */
+.cta {
+  display: inline-block;
+  margin-top: 32px;
+  padding: 14px 36px;
+  border: 1px solid rgba(255,255,255,0.8);
+  color: #fff;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  transition: all 0.6s ease;
+}
+
+.cta:hover {
+  background: rgba(160, 30, 30, 0.8); /* muted red */
+  border-color: rgba(160, 30, 30, 0.8);
+}
+
+/* FOOTER */
+footer {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.4;
+}
