@@ -1,71 +1,37 @@
 import "./globals.css";
-import Link from "next/link";
-import PayPalProvider from "./components/PayPalProvider";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import Navbar from "./components/Navbar"; // IMPORT THE NEW COMPONENT
+import ClientWrapper from "./components/ClientWrapper";
+
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ["latin"], 
+  variable: "--font-display" 
+});
+
+const jetbrainsMono = JetBrains_Mono({ 
+  subsets: ["latin"], 
+  variable: "--font-mono" 
+});
 
 export const metadata = {
-  title: "X-Night | Sneakers",
-  description: "Engineered for the night",
+  title: "XSNEAKERS | Engineered in Dubai",
+  description: "Advanced Carbon Fiber Footwear",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-black text-white font-sans">
+    <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
+      <body className="bg-[#050505] text-[#E0E0E0] font-sans antialiased selection:bg-[#FF2A2A] selection:text-white">
+        
+        {/* USE THE NEW CLIENT NAVBAR */}
+        <Navbar />
 
-        {/* NAVBAR */}
-        <header className="fixed top-0 left-0 w-full z-50 bg-black shadow-md">
-          <nav className="max-w-7xl mx-auto px-10 py-6 flex justify-between items-center">
-
-            {/* LOGO */}
-            <div className="text-white font-bold italic tracking-widest text-lg cursor-pointer">
-              X-NIGHT
-            </div>
-
-            {/* NAV LINKS */}
-            <div className="flex gap-8 items-center">
-              <Link
-                href="/"
-                className="hover:text-red-600 transition-colors duration-300"
-              >
-                Home
-              </Link>
-
-              <Link
-                href="/about"
-                className="hover:text-red-600 transition-colors duration-300"
-              >
-                About
-              </Link>
-
-              <Link
-                href="/x-night"
-                className="hover:text-red-600 font-bold transition-colors duration-300"
-              >
-                X-Night
-              </Link>
-
-              <Link
-                href="/contact"
-                className="hover:text-red-600 transition-colors duration-300"
-              >
-                Contact
-              </Link>
-            </div>
-
-          </nav>
-        </header>
-
-        {/* MAIN CONTENT */}
-        <main className="pt-28">
-          <PayPalProvider>
+        <main className="relative z-0">
+          <ClientWrapper>
             {children}
-          </PayPalProvider>
+          </ClientWrapper>
         </main>
-
+        
       </body>
     </html>
   );
