@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Helper to close menu when a link is clicked
   const closeMenu = () => setIsOpen(false);
 
   return (
@@ -25,16 +24,28 @@ export default function Navbar() {
             XSNEAKERS
           </Link>
 
-          {/* DESKTOP LINKS (Hidden on Mobile) */}
-          <div className="hidden md:flex gap-12 font-mono text-xs tracking-[0.2em] text-[#E0E0E0]">
-            <Link href="/x-night" className="hover:text-[#FF2A2A] transition-colors">
+          {/* DESKTOP LINKS */}
+          <div className="hidden md:flex gap-12 font-mono text-xs tracking-[0.2em] items-center">
+            <Link href="/x-night" className="text-[#E0E0E0] hover:text-[#FF2A2A] transition-colors">
               X-NIGHT
             </Link>
-            <Link href="/about" className="hover:text-[#FF2A2A] transition-colors">
+            <Link href="/about" className="text-[#E0E0E0] hover:text-[#FF2A2A] transition-colors">
               ENGINEERING
             </Link>
-            <Link href="/reserve" className="hover:text-[#FF2A2A] transition-colors">
+            <Link href="/reserve" className="text-[#E0E0E0] hover:text-[#FF2A2A] transition-colors">
               ALLOCATION
+            </Link>
+
+            {/* RESELL LINK - NOW LAST */}
+            <Link 
+              href="/resell" 
+              className="text-[#00FFC8] hover:drop-shadow-[0_0_8px_#00FFC8] transition-all flex items-center gap-2 border border-[#00FFC8]/20 px-3 py-1 rounded-sm bg-[#00FFC8]/5"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FFC8] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00FFC8]"></span>
+              </span>
+              RESELL
             </Link>
           </div>
 
@@ -63,9 +74,17 @@ export default function Navbar() {
               <MobileLink href="/x-night" onClick={closeMenu}>X-NIGHT</MobileLink>
               <MobileLink href="/about" onClick={closeMenu}>ENGINEERING</MobileLink>
               <MobileLink href="/reserve" onClick={closeMenu}>ALLOCATION</MobileLink>
+              
+              {/* MOBILE RESELL LINK - LAST */}
+              <Link 
+                href="/resell" 
+                onClick={closeMenu}
+                className="font-display text-4xl font-bold text-[#00FFC8] hover:scale-110 transition-transform tracking-tighter"
+              >
+                RESELL
+              </Link>
             </div>
 
-            {/* Decoration Line */}
             <div className="absolute bottom-10 w-full flex justify-center opacity-30">
               <div className="h-16 w-px bg-gradient-to-b from-transparent via-white to-transparent" />
             </div>
@@ -76,7 +95,6 @@ export default function Navbar() {
   );
 }
 
-// Helper Component for Mobile Links
 const MobileLink = ({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) => (
   <Link 
     href={href} 

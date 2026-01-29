@@ -3,24 +3,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Cpu, Moon, Shield, Users, FileText, X, Maximize2, Activity } from "lucide-react";
+import { ArrowRight, Cpu, Moon, Shield, Users, FileText, X, Maximize2, Activity, Play } from "lucide-react";
 import { useState, useEffect } from "react";
 
 // DATA SOURCE
 const galleryItems = [
   { src: "/x-night/shoe-1.jpg", type: "image", title: "Lateral Profile", desc: "Aerodynamic carbon weave." },
   { src: "/x-night/shoe-2.jpg", type: "image", title: "Carbon Chassis", desc: "Real 3K Twill Carbon Fiber." },
-  { src: "/x-night/shoe-3.jpg", type: "image", title: "Night Mode", desc: "Luminous polymer sole activation." },
-  { src: "/x-night/shoe-4.jpg", type: "image", title: "Sole Tread", desc: "High-density rubber grip." },
+ { src: "/x-night/shoe-4.jpg", type: "image", title: "Sole Tread", desc: "High-density rubber grip." },
   { src: "/x-night/shoe-5.jpg", type: "image", title: "Heel Detail", desc: "Reinforced structure." },
-    { src: "/x-night/shoe-6.jpg", type: "image", title: "Down Side", desc: "Bottom view." },
+  { src: "/x-night/shoe-6.jpg", type: "image", title: "Down Side", desc: "Bottom view." },
   { src: "/x-night/video-360.mp4", type: "video", title: "360° Analysis", desc: "Complete structural review." },
 ];
 
 export default function XNightPage() {
   // STATE MANAGEMENT
   const [viewers, setViewers] = useState(1240);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // Updated state to handle both Images and Videos
+  const [selectedMedia, setSelectedMedia] = useState<{ type: string, src: string } | null>(null);
 
   // 1. INCREMENT VIEWERS LOGIC
   useEffect(() => {
@@ -41,22 +41,39 @@ export default function XNightPage() {
   return (
     <div className="bg-[#050505] min-h-screen text-[#E0E0E0] font-sans">
       
-      {/* --- LIGHTBOX (FULL SCREEN ZOOM) --- */}
+      {/* --- UNIVERSAL LIGHTBOX (HANDLES VIDEO & IMAGE) --- */}
       <AnimatePresence>
-        {selectedImage && (
+        {selectedMedia && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 cursor-zoom-out"
-            onClick={() => setSelectedImage(null)}
+            onClick={() => setSelectedMedia(null)}
           >
-            <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors">
+            <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-50">
               <X size={32} />
             </button>
+
             <motion.div 
               initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
               className="relative w-full h-full max-w-7xl max-h-screen flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking content
             >
-              <Image src={selectedImage} alt="Zoomed Detail" fill className="object-contain" priority />
+              {selectedMedia.type === 'video' ? (
+                <video 
+                  src={selectedMedia.src} 
+                  controls 
+                  autoPlay 
+                  className="w-full h-full max-h-[80vh] object-contain shadow-2xl"
+                />
+              ) : (
+                <Image 
+                  src={selectedMedia.src} 
+                  alt="Zoomed Detail" 
+                  fill 
+                  className="object-contain" 
+                  priority 
+                />
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -83,7 +100,7 @@ export default function XNightPage() {
         </p>
       </div>
 
-      {/* 2. CLICKABLE SLIDER */}
+      {/* 2. CLICKABLE SLIDER (UPDATED) */}
       <div className="mt-8 w-full overflow-x-scroll pb-4 no-scrollbar snap-x snap-mandatory">
         <div className="flex gap-2 px-4 md:px-0 md:max-w-[1600px] md:mx-auto">
           {galleryItems.map((item, index) => (
@@ -94,10 +111,21 @@ export default function XNightPage() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               className={`relative group shrink-0 snap-center overflow-hidden bg-[#0f0f0f] w-[85vw] md:w-[45vw] aspect-[4/3] cursor-pointer`}
-              onClick={() => item.type === 'image' && setSelectedImage(item.src)}
+              // UPDATED: Now sets object { type, src } instead of just string
+              onClick={() => setSelectedMedia({ type: item.type, src: item.src })}
             >
               {item.type === "video" ? (
-                <video src={item.src} autoPlay loop muted playsInline className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
+                <>
+                   <video 
+                     src={item.src} 
+                     autoPlay loop muted playsInline 
+                     className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" 
+                   />
+                   {/* Play Icon Hint */}
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/50 p-4 rounded-full backdrop-blur-sm border border-white/20 group-hover:scale-110 transition-transform">
+                      <Play className="text-white fill-white" size={24} />
+                   </div>
+                </>
               ) : (
                 <>
                   <Image src={item.src} alt={item.title} fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
@@ -122,7 +150,7 @@ export default function XNightPage() {
         </div>
       </div>
 
-      {/* 3. DESIGN LAB (UPDATED: No Photos Needed) */}
+      {/* 3. DESIGN LAB (UPDATED: BENDING VIDEO + "LAB 01") */}
       <section className="py-12 border-y border-white/5 bg-[#0a0a0a] mt-6">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           
@@ -131,62 +159,45 @@ export default function XNightPage() {
             <div className="flex items-center gap-2 text-[#FF2A2A] mb-4 font-mono text-xs tracking-widest">
               <FileText size={14} /> <span>ENGINEERING PROTOCOL</span>
             </div>
-            <h2 className="font-display text-3xl text-white mb-4">Designed in Dubai.</h2>
+            <h2 className="font-display text-3xl text-white mb-4">Flexible Carbon Fiber.</h2>
             <p className="text-sm text-gray-400 leading-relaxed mb-6">
-              X-Night is an engineering feat. Conceptualized in our Dubai headquarters, every curve is tested for aerodynamic efficiency. We spent 2,000+ hours on 3D prototyping to perfect the carbon fiber flex-ratio.
+              Unlike traditional carbon fiber which is rigid, our proprietary weave is engineered to bend. 
+              We stress-test every batch to ensure it can withstand 90° twisting without delamination.
             </p>
             <div className="grid grid-cols-2 gap-4">
                <div className="p-4 bg-black border border-[#333]">
-                 <p className="text-[#D4AF37] font-display text-2xl">2,000+</p>
-                 <p className="text-[10px] text-gray-500 font-mono">HOURS R&D</p>
+                 <p className="text-[#D4AF37] font-display text-2xl">90°</p>
+                 <p className="text-[10px] text-gray-500 font-mono">MAX FLEX ANGLE</p>
                </div>
                <div className="p-4 bg-black border border-[#333]">
-                 <p className="text-[#D4AF37] font-display text-2xl">54</p>
-                 <p className="text-[10px] text-gray-500 font-mono">PROTOTYPES</p>
+                 <p className="text-[#D4AF37] font-display text-2xl">3K</p>
+                 <p className="text-[10px] text-gray-500 font-mono">TWILL WEAVE</p>
                </div>
             </div>
           </div>
 
-          {/* RIGHT: DIGITAL MONITOR (CSS Generated - No Image Needed) */}
-          <div className="relative h-full min-h-[300px] bg-[#050505] border border-[#333] p-6 flex flex-col justify-between overflow-hidden">
+          {/* RIGHT: BENDING / TWISTING VIDEO CONTAINER */}
+          {/* NOTE: Ensure you have 'lab-stress.mp4' in your public/x-night folder */}
+          <div className="relative h-full min-h-[300px] bg-[#050505] border border-[#333] overflow-hidden group">
+             <video 
+                src="/x-night/lab-stress.mp4" 
+                autoPlay loop muted playsInline 
+                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+             />
              
-             {/* Background Grid Pattern */}
-             <div className="absolute inset-0 opacity-10 pointer-events-none" 
-                  style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
-             </div>
-
-             {/* Header */}
-             <div className="flex justify-between items-center z-10">
-                <span className="font-mono text-[10px] text-[#FF2A2A] tracking-widest animate-pulse">● SYSTEM_ACTIVE</span>
-                <span className="font-mono text-[10px] text-gray-600">DUBAI_LAB_01</span>
-             </div>
-
-             {/* Center Graphic: Digital Pulse */}
-             <div className="relative z-10 flex-1 flex items-center justify-center my-4">
-                <div className="relative w-40 h-40 border border-[#222] rounded-full flex items-center justify-center">
-                   <div className="absolute w-full h-full border border-[#D4AF37]/20 rounded-full animate-ping"></div>
-                   <div className="w-20 h-20 bg-[#D4AF37]/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-[#D4AF37]/50">
-                      <Activity size={24} className="text-[#D4AF37]" />
+             {/* Tech Overlay */}
+             <div className="absolute inset-0 pointer-events-none p-6 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                   <div className="flex items-center gap-2 text-[#FF2A2A] animate-pulse">
+                      <Activity size={12} /> <span className="font-mono text-[10px] tracking-widest">STRESS_TEST_LIVE</span>
                    </div>
+                   {/* UPDATED TEXT HERE: */}
+                   <span className="font-mono text-[10px] text-gray-500">LAB 01</span>
                 </div>
-                <div className="absolute bottom-10 font-mono text-[10px] text-[#E0E0E0] tracking-widest bg-black px-2">
-                   ANALYZING GEOMETRY
-                </div>
-             </div>
-
-             {/* Footer Data List */}
-             <div className="space-y-2 z-10 font-mono text-[10px] text-gray-500 border-t border-[#222] pt-4">
-                <div className="flex justify-between">
-                   <span>AERODYNAMICS</span>
-                   <span className="text-[#00FFC8]">OPTIMAL</span>
-                </div>
-                <div className="flex justify-between">
-                   <span>FIBER TENSION</span>
-                   <span className="text-[#E0E0E0]">3400 MPa</span>
-                </div>
-                <div className="flex justify-between">
-                   <span>WEIGHT DIST.</span>
-                   <span className="text-[#E0E0E0]">PERFECTLY BALANCED</span>
+                
+                <div className="font-mono text-[10px] text-white/50 text-right">
+                   TORSION LOAD: 45Nm <br/>
+                   INTEGRITY: 100%
                 </div>
              </div>
           </div>
@@ -202,7 +213,7 @@ export default function XNightPage() {
               <Shield size={18} />
               <h3 className="font-mono text-xs tracking-widest">MATERIAL INNOVATION</h3>
             </div>
-            <h2 className="font-display text-2xl md:text-3xl">Flexible Carbon Fiber.</h2>
+            <h2 className="font-display text-2xl md:text-3xl">Aerodynamic Weave.</h2>
             <p className="text-gray-400 text-sm leading-relaxed">
               The upper is crafted from real carbon fiber, engineered to be flexible. This provides the tensile strength of a supercar chassis with the comfort of a luxury sock liner.
             </p>

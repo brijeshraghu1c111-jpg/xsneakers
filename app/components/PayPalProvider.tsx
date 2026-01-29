@@ -10,7 +10,7 @@ export default function PayPalProvider({
   return (
     <PayPalScriptProvider
       options={{
-        clientId: "AWLNgy6I5kj_NFYJZ5rmz-szQJB3zCgl9NRI7aYkCHJVLC4ONTWdD_ENALnNjhzP_UFxYLwc-v5LHt4R",
+        clientId: "ARkCMVWsX2VzUDZK5l1XG7FiQg3ldxUOYVHZGkKvZQOu27nWl5oRfzdT8fRm2Ps6AZC8AWMgY87qYxAZ",
         currency: "USD",
         intent: "capture",
       }}
